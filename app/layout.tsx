@@ -3,11 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import {
   ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
 } from '@clerk/nextjs'
+import QueryProviders from "@/providers/query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,11 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-
-
       <html lang="en">
         <body className={`${inter.className} dark`}>
-          {children}
+          <QueryProviders>
+            {children}
+          </QueryProviders>
         </body>
       </html>
     </ClerkProvider>
