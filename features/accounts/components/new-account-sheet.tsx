@@ -19,8 +19,8 @@ export const NewAccountSheet = () => {
                 onClose()
             }
         })
-        console.log({ values })
     }
+
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent className='space-y-4'>
