@@ -14,9 +14,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 const CategoryPage = () => {
     const newCategory = useNewCategory()
     const categoryQuery = useGetCategories()
-    const deleteCategorys = useBulkDeleteCategory()
+    const deleteCategories = useBulkDeleteCategory()
     const categoryData = categoryQuery.data || []
-    const isDisabled = categoryQuery.isLoading || deleteCategorys.isPending
+    const isDisabled = categoryQuery.isLoading || deleteCategories.isPending
 
     if (categoryQuery.isLoading) {
         return (
@@ -58,7 +58,7 @@ const CategoryPage = () => {
                         filterKey='name'
                         onDelete={(rows) => {
                             const ids = rows.map((row) => row.original.id)
-                            deleteCategorys.mutate({ ids })
+                            deleteCategories.mutate({ ids })
                         }}
                         disabled={isDisabled}
                     />
