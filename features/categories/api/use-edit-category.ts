@@ -9,7 +9,7 @@ type ResponseType = InferResponseType<typeof client.api.categories[':id']['$patc
 type RequestType = InferRequestType<typeof client.api.categories[':id']['$patch']>['json'];
 
 
-export const useEditCategories = (id?: string) => {
+export const useEditCategory = (id?: string) => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<ResponseType, Error, RequestType>({
