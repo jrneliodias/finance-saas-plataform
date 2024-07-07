@@ -1,4 +1,4 @@
-import { InferRequestType,InferResponseType } from "hono";
+import { InferRequestType, InferResponseType } from "hono";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { client } from "@/lib/hono";
@@ -22,7 +22,7 @@ export const useBulkDeleteTransactions = () => {
         },
         onSuccess: () => {
             toast.success("Transaction deleted successfully");
-            queryClient.invalidateQueries({queryKey: ["transactions"]});
+            queryClient.invalidateQueries({ queryKey: ["transactions"] });
             //TODO: Also invalidate summary
         },
         onError: () => {
