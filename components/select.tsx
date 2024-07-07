@@ -6,7 +6,7 @@ import CreateableSelect from "react-select/creatable"
 
 type Props = {
     onChange: (value?: string) => void
-    onCreate: (value?: string) => void
+    onCreate?: (value: string) => void
     options?: { value: string; label: string }[]
     value?: string | null | undefined
     disabled?: boolean
@@ -23,16 +23,13 @@ export const Select = ({
     placeholder
 }: Props) => {
 
-    const onSelect = (value: SingleValue<{ value: string; label: string }>) => {
-        onChange(value?.value)
+    const onSelect = (option: SingleValue<{ value: string; label: string }>) => {
+        onChange(option?.value)
     }
 
-    const formattedValues = useMemo(() => {
-        return options.map((option) => ({
-            value: option.value,
-            label: option.label
-        }))
-    }, [options])
+    const formattedValue = useMemo(() => {
+        return options.find((option) => option.value === value)
+    }, [options, value])
 
 
     return (
@@ -50,7 +47,7 @@ export const Select = ({
             }}
             onCreateOption={onCreate}
             onChange={onSelect}
-            value={formattedValues}
+            value={formattedValue}
             options={options}
             placeholder={placeholder}
         />
