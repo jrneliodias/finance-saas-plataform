@@ -1,6 +1,7 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { insertAccountSchema, insertTransactionSchema } from "@/db/schema";
+import { insertTransactionSchema } from "@/db/schema";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,20 +9,22 @@ import { z } from "zod";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
-    FormLabel,
-    FormMessage
+    FormLabel
 } from "@/components/ui/form";
-import { date } from "drizzle-orm/mysql-core";
+import { Select } from "@/components/select";
+import { DatePicker } from "@/components/date-picker";
+import { Textarea } from "@/components/ui/textarea";
+import { AmountInput } from "@/components/amount-input";
+import { convertAmountToMiliunits } from "@/lib/utils";
 
 const formSchema = z.object({
     date: z.coerce.date(),
     accountId: z.string(),
     categoryId: z.string().nullable().optional(),
     payee: z.string(),
-    amount: z.number(),
+    amount: z.string(),
     notes: z.string().nullable().optional(),
 })
 
@@ -61,9 +64,14 @@ export const TransactionForm = ({
     });
 
     const handleSubmit = (values: FormValues) => {
+        const amount = parseFloat(values.amount)
+        const amountInMiliUnits = convertAmountToMiliunits(amount)
 
         console.log({ values })
-        onSubmit(values)
+        onSubmit({
+            ...values,
+            amount: amountInMiliUnits,
+        })
     }
 
     const handleDelete = () => {
@@ -72,20 +80,120 @@ export const TransactionForm = ({
     return (
         <Form {...form}>
             <form
-                onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={form.handleSubmit(handleSubmit)}
                 className="pt-4 space-y-4"
             >
                 <FormField
                     control={form.control}
-                    name="name"
+                    name="date"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                                <DatePicker
+                                    onChange={field.onChange}
+                                    value={field.value}
+                                    disabled={disabled}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="accountId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Account
+                            </FormLabel>
+                            <FormControl>
+                                <Select
+                                    placeholder="Select account"
+                                    options={accountsOptions}
+                                    onCreate={onCreateAccount}
+                                    onChange={field.onChange}
+                                    disabled={disabled}
+
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="categoryId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Category
+                            </FormLabel>
+                            <FormControl>
+                                <Select
+                                    placeholder="Select category"
+                                    options={categoriesOptions}
+                                    onCreate={onCreateCategory}
+                                    onChange={field.onChange}
+                                    disabled={disabled}
+
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="payee"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Payee
+                            </FormLabel>
                             <FormControl>
                                 <Input
-                                    disabled={disabled}
-                                    placeholder="e.g. Cash, Bank, etc."
                                     {...field}
+                                    disabled={disabled}
+                                    placeholder="Add a payee"
+
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Notes
+                            </FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    {...field}
+                                    value={field.value || ""}
+                                    disabled={disabled}
+                                    placeholder="Optional notes"
+
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="amount"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Amount
+                            </FormLabel>
+                            <FormControl>
+                                <AmountInput
+                                    disabled={disabled}
+                                    {...field}
+                                    placeholder="0,00"
                                 />
                             </FormControl>
                         </FormItem>
@@ -97,7 +205,7 @@ export const TransactionForm = ({
                     disabled={disabled}
                     className="w-full"
                 >
-                    {id ? "Update changes" : "Create account"}
+                    {id ? "Update transaction" : "Create transaction"}
                 </Button>
                 {!!id && <Button
                     variant="outline"
@@ -108,7 +216,7 @@ export const TransactionForm = ({
 
                 >
                     <Trash className="size-4 mr-2" />
-                    <span>Delete</span>
+                    <span>Delete transaction</span>
                 </Button>}
 
 

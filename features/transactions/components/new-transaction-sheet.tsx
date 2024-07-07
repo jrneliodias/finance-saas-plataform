@@ -45,6 +45,7 @@ export const NewTransactionSheet = () => {
         createTransactionMutation.isPending ||
         categoryMutation.isPending ||
         accountMutation.isPending
+
     const isLoading =
         categoryQuery.isLoading ||
         accountQuery.isLoading
@@ -66,7 +67,6 @@ export const NewTransactionSheet = () => {
                         Create a new transaction to track your debits
                     </SheetDescription>
                 </SheetHeader>
-                <p>transaction form</p>
                 {isLoading
                     ? (
                         <section>
